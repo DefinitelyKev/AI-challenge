@@ -1,14 +1,34 @@
 # AI Takehome Assessment 
 
 ## Background
-The in-house legal team at Acme Corp recieves are a large volume of diverse internal legal-related requests from within a company. These requests are triaged to a member of the legal team who is responsible for that kind of request e.g sales contracts, employment matters, travel expenses. Occassionally who is responsible for what changes as members are reshuffled and people join and leave the team.
+The in-house legal team at Acme Corp recieves are a large volume of diverse internal legal-related requests from within a company.
 
-The way requests are triaged can also depend on different properties of the request. For example a sales contract review can be assigned to John@acme.corp if the requestor is from Australia but assigned to Jane@acme.corp if the requestor is from the United states. Combinations of these conditions can be used to triage a request e.g "Location is Australia and Department is Finance".
+:notebook: The legal request could be:
+```
+Head of Engineering:
+  - Hey, we have a new engineer joining, I have an employment contract that I need approval for.
+
+Senior Marketer:
+  - We have a marketing campaign ready to launch, I need someone from legal help review it.
+
+A new employee:
+  - I am new here, is it a breach of contract if I talk to a competitor?
+```
+These requests are triaged to a member of the legal team who is responsible for that kind of request e.g sales contracts, employment matters, travel expenses. Occassionally who is responsible for what changes as members are reshuffled and people join and leave the team.
+
+The way requests are triaged can also depend on different properties of the request.  
+For example a sales contract review can be assigned to:
+* ***John@acme.corp*** if the requestor is from `Australia`, but assigned to
+* ***Jane@acme.corp*** if the requestor is from the `United states`.
+
+Combinations of these conditions can be used to triage a request e.g "Location is Australia and Department is Finance".
 
 Traditionally this has all been facilitated through email and members of the legal team at Acme often find themselves having to manually triage requests to the correct team member. As you can imagine this is a painstaking process...
 
 
 ## Scope
+> :gem: **Use of AI to help you code and brainstorm is encouraged!**
+
 Build an AI Agent proof of concept that will act as a 'frontdoor' for employees at Acme to send legal requests to. The way this AI Agent triages various types of requests must be configurable. 
 
 Here are some examples of how the AI Agent might behave:
@@ -31,8 +51,6 @@ We have provided you a lightweight chat app scaffold, feel free to make as many 
 - The webapp should have the following routes: 
   - `localhost:5173/chat` the chat interface, where requestor's enter their request. 
   - `localhost:5173/configure` where admins configure how requests are triaged and who they triaged to.  
-
-**Use of AI to help you code and brainstorm is encouraged!**
 
 ## Out of Scope
 We only want to solve the core problem at hand. Examples of things that are out of scope: 
