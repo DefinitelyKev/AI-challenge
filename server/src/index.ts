@@ -18,7 +18,7 @@ const port = Number.parseInt(process.env.PORT ?? '5000', 10);
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, baseURL: process.env.OPENAI_BASE_URL });
 
 type ChatCompletionMessageParam = OpenAI.Chat.Completions.ChatCompletionMessageParam;
 type StreamChunk = OpenAI.Chat.Completions.ChatCompletionChunk;
