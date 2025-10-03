@@ -50,7 +50,7 @@ This assessment is intentionally open ended. We're looking for the following:
 
 ## Project scaffold Structure
 
-> :bulb: The current scaffhold utilizes OpenAI's GPT-OSS120b model from groq (A fast inference API with limited free access) Click [here](https://groq.com/) to register an account.
+> :bulb: The current scaffold utilizes OpenAI's GPT-OSS120b model from groq (A fast inference API with limited free access) Click [here](https://groq.com/) to register an account.
 
 A two-part web application consisting of a TypeScript React frontend and a TypeScript Express backend. The chat interface streams responses from OpenAI's model, while a placeholder configuration page is ready for future settings.
 
