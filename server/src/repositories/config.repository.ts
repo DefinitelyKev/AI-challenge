@@ -1,13 +1,20 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { TriageConfig, TriageRule } from './types';
+import { TriageConfig, TriageRule } from '../validation/schemas';
+import { logger } from '../utils/logger';
 
-export class ConfigStore {
+/**
+ * ConfigRepository handles persistent storage of triage configuration
+ *
+ * Repository Pattern: Abstracts data access, making it easy to swap
+ * file-based storage for a database later without changing business logic.
+ */
+export class ConfigRepository {
   private configPath: string;
   private config: TriageConfig | null = null;
 
   constructor() {
-    this.configPath = path.join(__dirname, '../data/triage-config.json');
+    this.configPath = path.join(__dirname, '../../data/triage-config.json');
   }
 
   async getConfig(): Promise<TriageConfig> {
@@ -20,7 +27,7 @@ export class ConfigStore {
       this.config = JSON.parse(data) as TriageConfig;
       return this.config;
     } catch (error) {
-      console.error('Error reading config file:', error);
+      logger.error('Error reading config file', error);
       throw new Error('Failed to load triage configuration');
     }
   }
@@ -30,7 +37,7 @@ export class ConfigStore {
       await fs.writeFile(this.configPath, JSON.stringify(config, null, 2), 'utf-8');
       this.config = config;
     } catch (error) {
-      console.error('Error saving config file:', error);
+      logger.error('Error saving config file', error);
       throw new Error('Failed to save triage configuration');
     }
   }
