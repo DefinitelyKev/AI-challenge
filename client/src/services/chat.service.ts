@@ -4,15 +4,11 @@ import { chatRequestSchema } from "../schemas";
 import type { ChatRequest } from "../schemas";
 
 /**
- * Chat service - Encapsulates all chat-related API operations
+ * Chat service
  */
 export const chatService = {
   /**
    * Sends chat message and streams response
-   *
-   * @param messages - Array of chat messages (conversation history)
-   * @returns ReadableStream for streaming response
-   * @throws {Error} If validation fails or API request fails
    */
   async sendMessage(messages: ChatRequest["messages"]): Promise<ReadableStream<Uint8Array>> {
     // Validate request before sending

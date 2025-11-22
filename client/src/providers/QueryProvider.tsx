@@ -8,11 +8,6 @@ interface QueryProviderProps {
 
 /**
  * QueryProvider component
- *
- * Usage:
- * <QueryProvider>
- *   <App />
- * </QueryProvider>
  */
 export function QueryProvider({ children }: QueryProviderProps) {
   return (

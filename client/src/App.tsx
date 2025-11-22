@@ -1,18 +1,30 @@
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, Box, AppBar, Toolbar, Typography, Tabs, Tab } from "@mui/material";
+import { useEffect, useRef } from "react";
 import ChatPage from "./pages/ChatPage";
 import ConfigurePage from "./pages/ConfigurePage";
 import { theme } from "./lib/theme";
+import { logger } from "./lib/logger";
 
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
+  const previousPath = useRef(location.pathname);
+
+  // Log navigation events
+  useEffect(() => {
+    if (previousPath.current !== location.pathname) {
+      logger.navigation(previousPath.current, location.pathname);
+      previousPath.current = location.pathname;
+    }
+  }, [location.pathname]);
 
   // Determine active tab based on current route
   const currentTab = location.pathname.startsWith("/configure") ? "/configure" : "/chat";
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
+    logger.userInteraction("tab_change", "navigation", { to: newValue });
     navigate(newValue);
   };
 

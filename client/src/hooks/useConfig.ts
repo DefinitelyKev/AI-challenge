@@ -12,11 +12,6 @@ export const configKeys = {
 
 /**
  * useConfig - Fetches and caches triage configuration
- *
- * @returns Query result with data, loading, and error states
- *
- * Usage:
- * const { data, isLoading, error } = useConfig();
  */
 export function useConfig() {
   return useQuery({

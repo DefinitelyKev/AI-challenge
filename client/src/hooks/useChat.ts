@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { chatService } from "../services";
 import { MESSAGE_ROLES } from "../lib/constants";
+import { logger } from "../lib/logger";
 import type { ChatMessage } from "../schemas";
 
 /**
@@ -14,11 +15,6 @@ const createMessage = (role: ChatMessage["role"], content: string): ChatMessage 
 
 /**
  * useChat - Manages chat state and streaming functionality
- *
- * @returns Chat state and actions
- *
- * Usage:
- * const { messages, sendMessage, isStreaming, error } = useChat();
  */
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -27,15 +23,15 @@ export function useChat() {
 
   /**
    * Sends a message and streams the response
-   *
-   * @param content - User message content
    */
   const sendMessage = useCallback(
     async (content: string) => {
       const userText = content.trim();
 
       if (!userText || isStreaming) {
-        console.log("[useChat] Ignoring send - empty input or already streaming");
+        logger.debug("Send message ignored", {
+          reason: !userText ? "empty input" : "already streaming",
+        });
         return;
       }
 
@@ -54,7 +50,12 @@ export function useChat() {
         content,
       }));
 
-      console.log("[useChat] Sending", conversation.length, "messages to server");
+      logger.userInteraction("send_message", "chat_input", {
+        messageCount: conversation.length,
+        messageLength: userText.length,
+      });
+
+      const streamStartTime = performance.now();
 
       try {
         // Get streaming response from service
@@ -70,7 +71,12 @@ export function useChat() {
           const { value, done } = await reader.read();
 
           if (done) {
-            console.log("[useChat] Stream done, received", chunkCount, "chunks");
+            const streamDuration = performance.now() - streamStartTime;
+            logger.streamEvent("complete", {
+              chunkCount,
+              responseLength: assistantText.length,
+              durationMs: streamDuration,
+            });
             break;
           }
 
@@ -80,7 +86,7 @@ export function useChat() {
             assistantText += chunk;
 
             if (chunkCount === 1) {
-              console.log("[useChat] First chunk received");
+              logger.streamEvent("chunk", { firstChunk: true });
             }
 
             // Update assistant message with accumulated text
@@ -92,21 +98,23 @@ export function useChat() {
 
         // Finalize decoding
         assistantText += decoder.decode();
-        console.log("[useChat] Final text length:", assistantText.length);
 
         // Final update to ensure all text is captured
         setMessages((prev) =>
           prev.map((msg) => (msg.id === assistantMessage.id ? { ...msg, content: assistantText } : msg))
         );
+
+        logger.performance("chat_stream_total", performance.now() - streamStartTime);
       } catch (caughtError) {
         const errorMessage = caughtError instanceof Error ? caughtError.message : "Something went wrong";
-        console.error("[useChat] Error:", caughtError);
+        logger.error("Chat message failed", caughtError, {
+          messageCount: conversation.length,
+        });
         setError(errorMessage);
 
         // Remove assistant message on error
         setMessages((prev) => prev.filter((msg) => msg.id !== assistantMessage.id));
       } finally {
-        console.log("[useChat] Cleaning up");
         setIsStreaming(false);
       }
     },
@@ -117,6 +125,7 @@ export function useChat() {
    * Clears all messages and resets state
    */
   const clearMessages = useCallback(() => {
+    logger.userInteraction("clear_messages", "chat_page");
     setMessages([]);
     setError(null);
   }, []);
