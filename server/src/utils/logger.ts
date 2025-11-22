@@ -1,12 +1,3 @@
-/**
- * Production-ready logger for telemetry and observability
- *
- * In production, these logs would be:
- * - Shipped to centralized logging (e.g., CloudWatch, DataDog, Splunk)
- * - Used for monitoring, alerting, and debugging
- * - Analyzed for performance metrics and user behavior
- */
-
 export enum LogLevel {
   DEBUG = "DEBUG",
   INFO = "INFO",

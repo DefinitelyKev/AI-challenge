@@ -26,7 +26,7 @@ interface RuleFormProps {
 }
 
 export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
-  const isNewRule = rule.id.startsWith("rule-");
+  const isNewRule = rule.id.startsWith("new-rule-");
 
   const {
     control,
@@ -62,17 +62,21 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
         {isNewRule ? "Add" : "Edit"} Rule
       </Typography>
 
       {errors.root && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
           {errors.root.message}
         </Alert>
       )}
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{ display: "flex", flexDirection: "column", gap: 3.5 }}
+      >
         {/* Request Type */}
         <Controller
           name="requestType"
@@ -94,19 +98,19 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
 
         {/* Conditions */}
         <Box>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 600 }}>
             Conditions (all must match)
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5, mb: 2.5 }}>
             {fields.map((field, index) => (
-              <Box key={field.id} sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
+              <Box key={field.id} sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
                 <Controller
                   name={`conditions.${index}.field`}
                   control={control}
                   render={({ field }) => (
-                    <FormControl sx={{ minWidth: 150 }}>
+                    <FormControl sx={{ minWidth: 140, flex: 0.3 }}>
                       <InputLabel>Field</InputLabel>
-                      <Select {...field} label="Field">
+                      <Select {...field} label="Field" size="small">
                         {config.conditionFields.map((condField) => (
                           <MenuItem key={condField.name} value={condField.name}>
                             {condField.label}
@@ -121,9 +125,9 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
                   name={`conditions.${index}.operator`}
                   control={control}
                   render={({ field }) => (
-                    <FormControl sx={{ minWidth: 120 }}>
+                    <FormControl sx={{ minWidth: 110, flex: 0.25 }}>
                       <InputLabel>Operator</InputLabel>
-                      <Select {...field} label="Operator">
+                      <Select {...field} label="Operator" size="small">
                         <MenuItem value="equals">equals</MenuItem>
                         <MenuItem value="contains">contains</MenuItem>
                         <MenuItem value="in">in</MenuItem>
@@ -140,13 +144,15 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
 
                     if (currentField?.type === "select") {
                       return (
-                        <FormControl sx={{ flex: 1 }}>
-                          <InputLabel>Value</InputLabel>
+                        <FormControl sx={{ flex: 0.45 }}>
+                          <InputLabel shrink={!!value || value === ""}>Value</InputLabel>
                           <Select
                             {...rest}
                             value={value as string}
                             onChange={(e) => onChange(e.target.value)}
                             label="Value"
+                            size="small"
+                            displayEmpty
                           >
                             <MenuItem value="">Select...</MenuItem>
                             {currentField.options?.map((opt) => (
@@ -162,18 +168,20 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
                     return (
                       <TextField
                         {...rest}
-                        sx={{ flex: 1 }}
+                        sx={{ flex: 0.45 }}
                         label="Value"
                         value={value as string}
                         onChange={(e) => onChange(e.target.value)}
-                        placeholder="Value"
+                        placeholder="Enter value"
+                        size="small"
+                        InputLabelProps={{ shrink: true }}
                       />
                     );
                   }}
                 />
 
-                <IconButton color="error" onClick={() => remove(index)} aria-label="Remove condition">
-                  <DeleteIcon />
+                <IconButton color="error" onClick={() => remove(index)} aria-label="Remove condition" size="small">
+                  <DeleteIcon fontSize="small" />
                 </IconButton>
               </Box>
             ))}
@@ -222,11 +230,11 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
         />
 
         {/* Form Actions */}
-        <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-          <Button variant="outlined" startIcon={<CancelIcon />} onClick={onCancel}>
+        <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", pt: 1 }}>
+          <Button variant="outlined" startIcon={<CancelIcon />} onClick={onCancel} sx={{ minWidth: 110 }}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained" startIcon={<SaveIcon />}>
+          <Button type="submit" variant="contained" startIcon={<SaveIcon />} sx={{ minWidth: 130 }}>
             Save Rule
           </Button>
         </Box>

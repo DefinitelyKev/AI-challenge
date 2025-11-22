@@ -11,10 +11,8 @@ export const chatService = {
    * Sends chat message and streams response
    */
   async sendMessage(messages: ChatRequest["messages"]): Promise<ReadableStream<Uint8Array>> {
-    // Validate request before sending
     const validatedRequest = chatRequestSchema.parse({ messages });
 
-    // Send request via API client
     return apiClient.postStream(API_ENDPOINTS.CHAT, validatedRequest);
   },
 };

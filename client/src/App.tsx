@@ -1,64 +1,138 @@
-import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Tabs, Tab } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { Box, AppBar, Toolbar, Typography, Button, Drawer, IconButton } from "@mui/material";
+import { Settings as SettingsIcon, Close as CloseIcon } from "@mui/icons-material";
+import { useState } from "react";
 import ChatPage from "./pages/ChatPage";
 import ConfigurePage from "./pages/ConfigurePage";
-import { theme } from "./lib/theme";
+import { useChat } from "./hooks";
 import { logger } from "./lib/logger";
+import { colors, styleUtils } from "./lib/theme";
 
 export default function App() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const previousPath = useRef(location.pathname);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Log navigation events
-  useEffect(() => {
-    if (previousPath.current !== location.pathname) {
-      logger.navigation(previousPath.current, location.pathname);
-      previousPath.current = location.pathname;
-    }
-  }, [location.pathname]);
+  // Lift chat state to App level to persist
+  const chatState = useChat();
 
-  // Determine active tab based on current route
-  const currentTab = location.pathname.startsWith("/configure") ? "/configure" : "/chat";
+  const handleOpenDrawer = () => {
+    logger.userInteraction("open_drawer", "navigation", { drawer: "configure" });
+    setDrawerOpen(true);
+  };
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
-    logger.userInteraction("tab_change", "navigation", { to: newValue });
-    navigate(newValue);
+  const handleCloseDrawer = () => {
+    logger.userInteraction("close_drawer", "navigation", { drawer: "configure" });
+    setDrawerOpen(false);
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <Box
+      sx={{
+        minHeight: "100vh",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "linear-gradient(180deg, #1C1917 0%, #292524 100%)",
+        overflow: "hidden",
+      }}
+    >
+      <AppBar position="static" elevation={0}>
+        <Toolbar sx={{ justifyContent: "space-between", py: 1 }}>
+          <Typography
+            variant="h5"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
+              ...styleUtils.gradientText,
+            }}
+          >
+            Legal Frontdoor
+          </Typography>
+
+          <Button
+            variant="outlined"
+            startIcon={<SettingsIcon />}
+            onClick={handleOpenDrawer}
+            sx={{
+              borderColor: colors.alpha.primary[30],
+              color: "text.primary",
+              "&:hover": {
+                borderColor: "primary.main",
+                backgroundColor: colors.alpha.primary[8],
+              },
+            }}
+          >
+            Configure
+          </Button>
+        </Toolbar>
+      </AppBar>
+
       <Box
+        component="main"
         sx={{
-          minHeight: "100vh",
+          flex: 1,
           display: "flex",
           flexDirection: "column",
-          background: "radial-gradient(circle at top, #1f2937, #0f172a)",
+          overflow: "hidden",
+          transition: "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          marginRight: drawerOpen ? { xs: 0, sm: "500px", md: "600px" } : 0,
         }}
       >
-        <AppBar position="static" elevation={0}>
-          <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Typography variant="h4" component="h1">
-              Legal frontdoor
-            </Typography>
-            <Tabs value={currentTab} onChange={handleTabChange} textColor="inherit">
-              <Tab label="Chat" value="/chat" />
-              <Tab label="Configure" value="/configure" />
-            </Tabs>
-          </Toolbar>
-        </AppBar>
-
-        <Box component="main" sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <Routes>
-            <Route path="/chat" element={<ChatPage />} />
-            <Route path="/configure" element={<ConfigurePage />} />
-            <Route path="*" element={<Navigate to="/chat" replace />} />
-          </Routes>
-        </Box>
+        <ChatPage chatState={chatState} />
       </Box>
-    </ThemeProvider>
+
+      {/* Configuration Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+        variant="persistent"
+        transitionDuration={300}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: { xs: "100%", sm: 500, md: 600 },
+            background: "linear-gradient(180deg, #1C1917 0%, #292524 100%)",
+            borderLeft: `1px solid ${colors.alpha.primary[20]}`,
+            boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.3)",
+          },
+        }}
+      >
+        {/* Drawer Header */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            px: 2,
+            py: 1.55,
+            borderBottom: `1px solid ${colors.alpha.white[10]}`,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              ...styleUtils.gradientText,
+            }}
+          >
+            Configuration
+          </Typography>
+          <IconButton
+            onClick={handleCloseDrawer}
+            sx={{
+              color: "text.secondary",
+              "&:hover": {
+                color: "text.primary",
+                backgroundColor: colors.alpha.white[5],
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        {/* Drawer Content */}
+        <ConfigurePage />
+      </Drawer>
+    </Box>
   );
 }

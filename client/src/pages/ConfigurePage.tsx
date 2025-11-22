@@ -5,6 +5,7 @@ import { useConfig, useCreateRule, useUpdateRule, useDeleteRule } from "../hooks
 import { RuleList, RuleForm } from "../components/config";
 import { Loading, ErrorDisplay } from "../components/ui";
 import type { TriageRule } from "../schemas";
+import { colors, styleUtils } from "../lib/theme";
 
 export default function ConfigurePage() {
   const [editingRule, setEditingRule] = useState<TriageRule | null>(null);
@@ -23,7 +24,7 @@ export default function ConfigurePage() {
     if (!config) return;
 
     const newRule: TriageRule = {
-      id: `rule-${Date.now()}`,
+      id: `new-rule-${Date.now()}`,
       requestType: config.requestTypes[0] || "",
       conditions: [],
       assignee: "",
@@ -87,76 +88,87 @@ export default function ConfigurePage() {
     setEditingRule(null);
   };
 
+  const scrollbarSx = {
+    height: "100%",
+    overflowY: "auto" as const,
+    ...styleUtils.scrollbar,
+  };
+
   // Loading state
   if (isLoading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Configuration
-        </Typography>
+      <Box sx={{ ...scrollbarSx, p: 3 }}>
         <Loading message="Loading configuration..." />
-      </Container>
+      </Box>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Configuration
-        </Typography>
+      <Box sx={{ ...scrollbarSx, p: 3 }}>
         <ErrorDisplay error={error.message} onRetry={() => refetch()} />
-      </Container>
+      </Box>
     );
   }
 
   // No config state
   if (!config) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Configuration
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+      <Box sx={{ ...scrollbarSx, p: 3 }}>
+        <Typography variant="body1" color="text.secondary">
           No configuration available
         </Typography>
-      </Container>
+      </Box>
     );
   }
 
-  // Main UI with configuration
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom>
-        Triage Configuration
-      </Typography>
+    <Box sx={scrollbarSx}>
+      <Box sx={{ p: 3 }}>
 
-      {/* Mutation errors */}
-      {createRule.error && <ErrorDisplay error={createRule.error.message} onDismiss={() => createRule.reset()} />}
-      {updateRule.error && <ErrorDisplay error={updateRule.error.message} onDismiss={() => updateRule.reset()} />}
-      {deleteRule.error && <ErrorDisplay error={deleteRule.error.message} onDismiss={() => deleteRule.reset()} />}
+        {/* Mutation errors */}
+        {createRule.error && <ErrorDisplay error={createRule.error.message} onDismiss={() => createRule.reset()} />}
+        {updateRule.error && <ErrorDisplay error={updateRule.error.message} onDismiss={() => updateRule.reset()} />}
+        {deleteRule.error && <ErrorDisplay error={deleteRule.error.message} onDismiss={() => deleteRule.reset()} />}
 
-      <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <Typography variant="h5" component="h2">
-            Triage Rules
-          </Typography>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddRule}>
-            Add New Rule
-          </Button>
+        <Box sx={{ mb: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Typography variant="h5" component="h2">
+              Triage Rules
+            </Typography>
+            <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddRule}>
+              Add New Rule
+            </Button>
+          </Box>
+
+          {/* Form for new rules only */}
+          {isFormOpen && editingRule && editingRule.id.startsWith("new-rule-") && (
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                mb: 3,
+                backgroundColor: colors.alpha.card,
+                border: `1px solid ${colors.alpha.primary[20]}`,
+              }}
+            >
+              <RuleForm rule={editingRule} config={config} onSave={handleSaveRule} onCancel={handleCancelEdit} />
+            </Paper>
+          )}
+
+          {/* Rules List */}
+          <RuleList
+            rules={config.rules}
+            onEdit={handleEditRule}
+            onDelete={handleDeleteRule}
+            editingRule={isFormOpen && editingRule && !editingRule.id.startsWith("new-rule-") ? editingRule : null}
+            config={config}
+            onSave={handleSaveRule}
+            onCancel={handleCancelEdit}
+          />
         </Box>
-
-        {/* Form */}
-        {isFormOpen && editingRule && (
-          <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-            <RuleForm rule={editingRule} config={config} onSave={handleSaveRule} onCancel={handleCancelEdit} />
-          </Paper>
-        )}
-
-        {/* Rules List */}
-        <RuleList rules={config.rules} onEdit={handleEditRule} onDelete={handleDeleteRule} />
       </Box>
-    </Container>
+    </Box>
   );
 }

@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Fade } from "@mui/material";
+import { Inbox } from "@mui/icons-material";
 
 interface EmptyStateProps {
   message: string;
@@ -7,20 +8,30 @@ interface EmptyStateProps {
 
 export function EmptyState({ message, action }: EmptyStateProps) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 2,
-        py: 8,
-      }}
-    >
-      <Typography variant="body1" color="text.secondary" textAlign="center">
-        {message}
-      </Typography>
-      {action && <Box>{action}</Box>}
-    </Box>
+    <Fade in timeout={600}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
+          py: 8,
+        }}
+      >
+        <Inbox
+          sx={{
+            fontSize: 64,
+            color: "text.disabled",
+            opacity: 0.3,
+            mb: 1,
+          }}
+        />
+        <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ maxWidth: 400 }}>
+          {message}
+        </Typography>
+        {action && <Box sx={{ mt: 1 }}>{action}</Box>}
+      </Box>
+    </Fade>
   );
 }

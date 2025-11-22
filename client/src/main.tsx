@@ -1,7 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 import { QueryProvider } from "./providers";
+import { theme } from "./lib/theme";
 import { logger } from "./lib/logger";
 import App from "./App";
 import "./index.css";
@@ -20,10 +22,11 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <QueryProvider>
-      <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <QueryProvider>
         <App />
-      </BrowserRouter>
-    </QueryProvider>
+      </QueryProvider>
+    </ThemeProvider>
   </StrictMode>
 );

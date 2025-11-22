@@ -1,15 +1,21 @@
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { RuleCard } from "./RuleCard";
+import { RuleForm } from "./RuleForm";
 import { EmptyState } from "../ui";
-import type { TriageRule } from "../../schemas";
+import type { TriageRule, TriageConfig } from "../../schemas";
+import { colors } from "../../lib/theme";
 
 interface RuleListProps {
   rules: TriageRule[];
   onEdit: (rule: TriageRule) => void;
   onDelete: (ruleId: string) => void;
+  editingRule: TriageRule | null;
+  config: TriageConfig;
+  onSave: (rule: TriageRule) => void;
+  onCancel: () => void;
 }
 
-export function RuleList({ rules, onEdit, onDelete }: RuleListProps) {
+export function RuleList({ rules, onEdit, onDelete, editingRule, config, onSave, onCancel }: RuleListProps) {
   if (rules.length === 0) {
     return <EmptyState message="No rules configured yet." />;
   }
@@ -20,7 +26,22 @@ export function RuleList({ rules, onEdit, onDelete }: RuleListProps) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {sortedRules.map((rule) => (
-        <RuleCard key={rule.id} rule={rule} onEdit={() => onEdit(rule)} onDelete={() => onDelete(rule.id)} />
+        <Box key={rule.id}>
+          {editingRule?.id === rule.id ? (
+            <Paper
+              elevation={3}
+              sx={{
+                p: 3,
+                backgroundColor: colors.alpha.card,
+                border: `1px solid ${colors.alpha.primary[20]}`,
+              }}
+            >
+              <RuleForm rule={editingRule} config={config} onSave={onSave} onCancel={onCancel} />
+            </Paper>
+          ) : (
+            <RuleCard rule={rule} onEdit={() => onEdit(rule)} onDelete={() => onDelete(rule.id)} />
+          )}
+        </Box>
       ))}
     </Box>
   );

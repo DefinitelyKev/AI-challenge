@@ -13,7 +13,6 @@ export const configService = {
   async getConfig(): Promise<TriageConfig> {
     const data = await apiClient.get<TriageConfig>(API_ENDPOINTS.CONFIG);
 
-    // Validate response against schema
     return triageConfigSchema.parse(data);
   },
 
@@ -21,12 +20,10 @@ export const configService = {
    * Creates a new triage rule
    */
   async createRule(rule: Omit<TriageRule, "id">): Promise<TriageConfig> {
-    // Validate rule before sending
     const validatedRule = triageRuleSchema.omit({ id: true }).parse(rule);
 
     const data = await apiClient.post<Omit<TriageRule, "id">, TriageConfig>(API_ENDPOINTS.RULES, validatedRule);
 
-    // Validate response
     return triageConfigSchema.parse(data);
   },
 
@@ -34,12 +31,10 @@ export const configService = {
    * Updates an existing triage rule
    */
   async updateRule(id: string, rule: TriageRule): Promise<TriageConfig> {
-    // Validate rule before sending
     const validatedRule = triageRuleSchema.parse(rule);
 
     const data = await apiClient.put<TriageRule, TriageConfig>(`${API_ENDPOINTS.RULES}/${id}`, validatedRule);
 
-    // Validate response
     return triageConfigSchema.parse(data);
   },
 
@@ -49,7 +44,6 @@ export const configService = {
   async deleteRule(id: string): Promise<TriageConfig> {
     const data = await apiClient.delete<TriageConfig>(`${API_ENDPOINTS.RULES}/${id}`);
 
-    // Validate response
     return triageConfigSchema.parse(data);
   },
 };

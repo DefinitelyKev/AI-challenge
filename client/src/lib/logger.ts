@@ -1,73 +1,3 @@
-/**
- * Production-Level Logger for Frontend Applications
- *
- * This logger provides structured, production-ready logging capabilities
- * for the frontend, mirroring the server's logging architecture.
- *
- * ## Features:
- * - Structured JSON logging in production (for log aggregators)
- * - Human-readable logs in development
- * - Automatic browser context capture (user agent, viewport, locale)
- * - Performance timing with performance.now()
- * - Frontend-specific log types (API, streaming, navigation, interactions)
- *
- * ## Log Levels:
- * - DEBUG: Verbose development information (only shown in dev mode)
- * - INFO: General informational messages
- * - WARN: Non-critical issues
- * - ERROR: Critical failures with stack traces
- *
- * ## Usage Examples:
- *
- * ```typescript
- * import { logger } from './lib/logger';
- *
- * // Basic logging
- * logger.info('User logged in', { userId: '123' });
- * logger.error('API failed', error, { endpoint: '/api/data' });
- *
- * // API requests (automatic timing)
- * logger.apiRequest('GET', '/api/config', 200, 145);
- *
- * // Streaming events
- * logger.streamEvent('start', { endpoint: '/api/chat' });
- * logger.streamEvent('chunk', { chunkCount: 5 });
- * logger.streamEvent('complete', { duration: 2500 });
- *
- * // User interactions
- * logger.userInteraction('button_click', 'submit_form', { formName: 'login' });
- *
- * // Navigation
- * logger.navigation('/home', '/profile');
- *
- * // Performance metrics
- * logger.performance('page_load', 1234, 'ms');
- *
- * // Cache events (TanStack Query)
- * logger.cacheEvent('hit', 'config/detail');
- * logger.cacheEvent('invalidate', 'config/detail');
- * ```
- *
- * ## Production Format (JSON):
- * ```json
- * {
- *   "timestamp": "2024-01-15T10:30:45.123Z",
- *   "level": "INFO",
- *   "service": "legal-triage-ui",
- *   "message": "API request completed",
- *   "method": "GET",
- *   "endpoint": "/api/config",
- *   "statusCode": 200,
- *   "durationMs": 145
- * }
- * ```
- *
- * ## Development Format (Human-readable):
- * ```
- * [2024-01-15T10:30:45.123Z] INFO - API request completed | {"method":"GET","endpoint":"/api/config","statusCode":200,"durationMs":145}
- * ```
- */
-
 export enum LogLevel {
   DEBUG = "DEBUG",
   INFO = "INFO",
@@ -168,13 +98,7 @@ class Logger {
   /**
    * Log API requests (success or failure)
    */
-  apiRequest(
-    method: string,
-    endpoint: string,
-    statusCode: number,
-    duration: number,
-    metadata?: LogMetadata
-  ): void {
+  apiRequest(method: string, endpoint: string, statusCode: number, duration: number, metadata?: LogMetadata): void {
     const level = statusCode >= 400 ? LogLevel.WARN : LogLevel.INFO;
     const message = statusCode >= 400 ? "API request failed" : "API request completed";
 
@@ -238,10 +162,7 @@ class Logger {
   /**
    * Log streaming events (chat streaming)
    */
-  streamEvent(
-    event: "start" | "chunk" | "complete" | "error",
-    metadata?: LogMetadata
-  ): void {
+  streamEvent(event: "start" | "chunk" | "complete" | "error", metadata?: LogMetadata): void {
     const level = event === "error" ? LogLevel.ERROR : LogLevel.DEBUG;
     const logMethod = event === "error" ? this.error.bind(this) : this.debug.bind(this);
 
@@ -268,11 +189,7 @@ class Logger {
   /**
    * Log cache events (TanStack Query)
    */
-  cacheEvent(
-    event: "hit" | "miss" | "invalidate" | "update",
-    queryKey: string,
-    metadata?: LogMetadata
-  ): void {
+  cacheEvent(event: "hit" | "miss" | "invalidate" | "update", queryKey: string, metadata?: LogMetadata): void {
     this.debug(`Cache ${event}`, {
       event,
       queryKey,
@@ -283,12 +200,7 @@ class Logger {
   /**
    * Log form validation events
    */
-  formValidation(
-    formName: string,
-    isValid: boolean,
-    errors?: Record<string, unknown>,
-    metadata?: LogMetadata
-  ): void {
+  formValidation(formName: string, isValid: boolean, errors?: Record<string, unknown>, metadata?: LogMetadata): void {
     const level = isValid ? LogLevel.DEBUG : LogLevel.WARN;
     const logMethod = isValid ? this.debug.bind(this) : this.warn.bind(this);
 

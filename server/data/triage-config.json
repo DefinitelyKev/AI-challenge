@@ -11,13 +11,24 @@
       "name": "location",
       "label": "Location",
       "type": "select",
-      "options": ["Australia", "United States", "United Kingdom", "Canada"]
+      "options": [
+        "Australia",
+        "United States",
+        "United Kingdom",
+        "Canada"
+      ]
     },
     {
       "name": "department",
       "label": "Department",
       "type": "select",
-      "options": ["Engineering", "Marketing", "Sales", "Finance", "HR"]
+      "options": [
+        "Engineering",
+        "Marketing",
+        "Sales",
+        "Finance",
+        "HR"
+      ]
     }
   ],
   "rules": [

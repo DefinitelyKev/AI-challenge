@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import { Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { ChatMessage } from "./ChatMessage";
-import { EmptyState } from "../ui";
 import type { ChatMessage as ChatMessageType } from "../../schemas";
+import { colors, styleUtils } from "../../lib/theme";
 
 interface MessageListProps {
   messages: ChatMessageType[];
@@ -17,30 +17,29 @@ export function MessageList({ messages, isStreaming }: MessageListProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  if (messages.length === 0) {
+    return null;
+  }
+
   return (
-    <Paper
-      elevation={2}
+    <Box
       sx={{
         flex: 1,
-        mb: 2,
         p: 3,
         display: "flex",
         flexDirection: "column",
-        overflow: "auto",
-        backgroundColor: "background.paper",
+        overflowY: "auto",
+        borderRadius: 2,
+        backgroundColor: colors.alpha.messageContainer,
+        border: `1px solid ${colors.alpha.primary[8]}`,
+        ...styleUtils.scrollbar,
       }}
     >
-      {messages.length === 0 ? (
-        <EmptyState message="No messages yet... Make a request!" />
-      ) : (
-        <>
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} isStreaming={isStreaming} />
-          ))}
-          {/* Auto-scroll anchor */}
-          <div ref={messagesEndRef} />
-        </>
-      )}
-    </Paper>
+      {messages.map((message) => (
+        <ChatMessage key={message.id} message={message} isStreaming={isStreaming} />
+      ))}
+      {/* Auto-scroll anchor */}
+      <div ref={messagesEndRef} />
+    </Box>
   );
 }

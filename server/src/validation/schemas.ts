@@ -12,7 +12,7 @@ export const TriageRuleSchema = z.object({
   id: z.string().min(1, "Rule ID is required"),
   requestType: z.string().min(1, "Request type is required"),
   conditions: z.array(ConditionSchema),
-  assignee: z.string().email("Invalid email format for assignee"),
+  assignee: z.email("Invalid email format for assignee"),
   priority: z.number().int().positive("Priority must be a positive integer"),
 });
 
