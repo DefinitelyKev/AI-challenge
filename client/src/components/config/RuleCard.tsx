@@ -1,5 +1,5 @@
-import { Card, CardContent, CardActions, Box, Typography, Button, Chip, Fade } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon, ArrowForward } from "@mui/icons-material";
+import { Card, CardContent, CardActions, Box, Typography, Button, Chip, Fade, IconButton } from "@mui/material";
+import { Edit as EditIcon, Delete as DeleteIcon, ArrowForward, ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import type { TriageRule } from "../../schemas";
 import { colors } from "../../lib/theme";
 
@@ -7,12 +7,16 @@ interface RuleCardProps {
   rule: TriageRule;
   onEdit: () => void;
   onDelete: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
 }
 
-export function RuleCard({ rule, onEdit, onDelete }: RuleCardProps) {
+export function RuleCard({ rule, onEdit, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: RuleCardProps) {
   const conditionsText =
     rule.conditions.length > 0
-      ? rule.conditions.map((c) => `${c.field} ${c.operator} "${c.value}"`).join(" AND ")
+      ? rule.conditions.map((c) => `${c.field} is "${c.value}"`).join(" AND ")
       : "No conditions (matches all)";
 
   return (
@@ -70,13 +74,39 @@ export function RuleCard({ rule, onEdit, onDelete }: RuleCardProps) {
             </Box>
           </Box>
         </CardContent>
-        <CardActions sx={{ justifyContent: "flex-end", px: 3, pt: 0, pb: 2 }}>
-          <Button size="small" startIcon={<EditIcon />} onClick={onEdit} sx={{ minWidth: 80 }}>
-            Edit
-          </Button>
-          <Button size="small" color="error" startIcon={<DeleteIcon />} onClick={onDelete} sx={{ minWidth: 90 }}>
-            Delete
-          </Button>
+        <CardActions sx={{ justifyContent: "space-between", px: 3, pt: 0, pb: 2 }}>
+          <Box sx={{ display: "flex", gap: 0.5 }}>
+            <IconButton
+              size="small"
+              onClick={onMoveUp}
+              disabled={!canMoveUp}
+              aria-label="Move up"
+              sx={{
+                "&:hover": { backgroundColor: "primary.dark" },
+              }}
+            >
+              <ArrowUpward fontSize="small" />
+            </IconButton>
+            <IconButton
+              size="small"
+              onClick={onMoveDown}
+              disabled={!canMoveDown}
+              aria-label="Move down"
+              sx={{
+                "&:hover": { backgroundColor: "primary.dark" },
+              }}
+            >
+              <ArrowDownward fontSize="small" />
+            </IconButton>
+          </Box>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button size="small" startIcon={<EditIcon />} onClick={onEdit} sx={{ minWidth: 80 }}>
+              Edit
+            </Button>
+            <Button size="small" color="error" startIcon={<DeleteIcon />} onClick={onDelete} sx={{ minWidth: 90 }}>
+              Delete
+            </Button>
+          </Box>
         </CardActions>
       </Card>
     </Fade>

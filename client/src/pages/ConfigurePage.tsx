@@ -88,6 +88,54 @@ export default function ConfigurePage() {
     setEditingRule(null);
   };
 
+  /**
+   * Moves a rule up in priority (decreases priority number)
+   */
+  const handleMoveUp = (ruleId: string) => {
+    if (!config) return;
+
+    const sortedRules = [...config.rules].sort((a, b) => a.priority - b.priority);
+    const currentIndex = sortedRules.findIndex((r) => r.id === ruleId);
+
+    if (currentIndex <= 0) return; // Already at top or not found
+
+    const currentRule = sortedRules[currentIndex];
+    const previousRule = sortedRules[currentIndex - 1];
+
+    // Swap priorities
+    const tempPriority = currentRule.priority;
+    currentRule.priority = previousRule.priority;
+    previousRule.priority = tempPriority;
+
+    // Update both rules
+    updateRule.mutate({ id: currentRule.id, rule: currentRule });
+    updateRule.mutate({ id: previousRule.id, rule: previousRule });
+  };
+
+  /**
+   * Moves a rule down in priority (increases priority number)
+   */
+  const handleMoveDown = (ruleId: string) => {
+    if (!config) return;
+
+    const sortedRules = [...config.rules].sort((a, b) => a.priority - b.priority);
+    const currentIndex = sortedRules.findIndex((r) => r.id === ruleId);
+
+    if (currentIndex < 0 || currentIndex >= sortedRules.length - 1) return; // Already at bottom or not found
+
+    const currentRule = sortedRules[currentIndex];
+    const nextRule = sortedRules[currentIndex + 1];
+
+    // Swap priorities
+    const tempPriority = currentRule.priority;
+    currentRule.priority = nextRule.priority;
+    nextRule.priority = tempPriority;
+
+    // Update both rules
+    updateRule.mutate({ id: currentRule.id, rule: currentRule });
+    updateRule.mutate({ id: nextRule.id, rule: nextRule });
+  };
+
   const scrollbarSx = {
     height: "100%",
     overflowY: "auto" as const,
@@ -162,6 +210,8 @@ export default function ConfigurePage() {
             rules={config.rules}
             onEdit={handleEditRule}
             onDelete={handleDeleteRule}
+            onMoveUp={handleMoveUp}
+            onMoveDown={handleMoveDown}
             editingRule={isFormOpen && editingRule && !editingRule.id.startsWith("new-rule-") ? editingRule : null}
             config={config}
             onSave={handleSaveRule}

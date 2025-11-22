@@ -4,7 +4,7 @@ function formatConditions(conditions: Condition[]): string {
   return conditions
     .map((cond) => {
       const value = Array.isArray(cond.value) ? cond.value.join(", ") : cond.value;
-      return `${cond.field} ${cond.operator} "${value}"`;
+      return `${cond.field} is/in "${value}"`;
     })
     .join(" AND ");
 }

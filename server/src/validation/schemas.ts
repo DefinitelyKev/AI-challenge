@@ -3,7 +3,6 @@ import { z } from "zod";
 // Condition schema
 export const ConditionSchema = z.object({
   field: z.string().min(1, "Field is required"),
-  operator: z.enum(["equals", "contains", "in"]),
   value: z.union([z.string(), z.array(z.string())]),
 });
 

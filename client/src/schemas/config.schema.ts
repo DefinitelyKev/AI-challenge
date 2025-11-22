@@ -1,11 +1,6 @@
 import { z } from "zod";
 
 /**
- * Condition operator - restricted to valid values
- */
-export const conditionOperatorSchema = z.enum(["equals", "contains", "in"]);
-
-/**
  * Condition field type
  */
 export const conditionFieldTypeSchema = z.enum(["text", "select"]);
@@ -15,7 +10,6 @@ export const conditionFieldTypeSchema = z.enum(["text", "select"]);
  */
 export const conditionSchema = z.object({
   field: z.string().min(1, "Field is required"),
-  operator: conditionOperatorSchema,
   value: z.union([z.string(), z.array(z.string())]),
 });
 
@@ -58,7 +52,6 @@ export const triageConfigSchema = z.object({
 /**
  * Inferred TypeScript types from schemas
  */
-export type ConditionOperator = z.infer<typeof conditionOperatorSchema>;
 export type ConditionFieldType = z.infer<typeof conditionFieldTypeSchema>;
 export type Condition = z.infer<typeof conditionSchema>;
 export type ConditionField = z.infer<typeof conditionFieldSchema>;

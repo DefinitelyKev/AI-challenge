@@ -51,7 +51,6 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
   const handleAddCondition = () => {
     append({
       field: config.conditionFields[0]?.name || "location",
-      operator: "equals",
       value: "",
     });
   };
@@ -101,14 +100,14 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
           <Typography variant="subtitle1" gutterBottom sx={{ mb: 2, fontWeight: 600 }}>
             Conditions (all must match)
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5, mb: 2.5 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5, mb: fields.length > 0 ? 2.5 : 0 }}>
             {fields.map((field, index) => (
               <Box key={field.id} sx={{ display: "flex", gap: 1.5, alignItems: "flex-start" }}>
                 <Controller
                   name={`conditions.${index}.field`}
                   control={control}
                   render={({ field }) => (
-                    <FormControl sx={{ minWidth: 140, flex: 0.3 }}>
+                    <FormControl sx={{ minWidth: 140, flex: 0.35 }}>
                       <InputLabel>Field</InputLabel>
                       <Select {...field} label="Field" size="small">
                         {config.conditionFields.map((condField) => (
@@ -121,20 +120,18 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
                   )}
                 />
 
-                <Controller
-                  name={`conditions.${index}.operator`}
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl sx={{ minWidth: 110, flex: 0.25 }}>
-                      <InputLabel>Operator</InputLabel>
-                      <Select {...field} label="Operator" size="small">
-                        <MenuItem value="equals">equals</MenuItem>
-                        <MenuItem value="contains">contains</MenuItem>
-                        <MenuItem value="in">in</MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
-                />
+                {/* Static "is" text */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    alignSelf: "center",
+                    color: "text.secondary",
+                    fontWeight: 500,
+                    px: 0.5,
+                  }}
+                >
+                  is
+                </Typography>
 
                 <Controller
                   name={`conditions.${index}.value`}
@@ -144,7 +141,7 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
 
                     if (currentField?.type === "select") {
                       return (
-                        <FormControl sx={{ flex: 0.45 }}>
+                        <FormControl sx={{ flex: 1 }}>
                           <InputLabel shrink={!!value || value === ""}>Value</InputLabel>
                           <Select
                             {...rest}
@@ -165,16 +162,22 @@ export function RuleForm({ rule, config, onSave, onCancel }: RuleFormProps) {
                       );
                     }
 
+                    const placeholders: Record<string, string> = {
+                      location: "e.g., United States, France, APAC",
+                      department: "e.g., Engineering, Sales, HR",
+                    };
+                    const placeholder = placeholders[currentField?.name || ""] || "Enter value";
+
                     return (
                       <TextField
                         {...rest}
-                        sx={{ flex: 0.45 }}
+                        sx={{ flex: 1 }}
                         label="Value"
                         value={value as string}
                         onChange={(e) => onChange(e.target.value)}
-                        placeholder="Enter value"
+                        placeholder={placeholder}
                         size="small"
-                        InputLabelProps={{ shrink: true }}
+                        slotProps={{ inputLabel: { shrink: true } }}
                       />
                     );
                   }}
