@@ -190,7 +190,7 @@
 
 .configure-page {
   margin: 0 auto;
-  width: min(900px, 100%);
+  width: min(1100px, 100%);
   background: rgba(15, 23, 42, 0.65);
   border-radius: 16px;
   padding: 2rem;
@@ -199,6 +199,234 @@
 
 .configure-page h1 {
   margin-top: 0;
+}
+
+.configure-page .error {
+  padding: 1rem;
+  background: rgba(248, 113, 113, 0.2);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fecaca;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.config-section {
+  margin-top: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  background: #3b82f6;
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  font-size: 0.95rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+}
+
+.btn-secondary {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(30, 41, 59, 0.5);
+  color: #e2e8f0;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease;
+  font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.btn-danger {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.15);
+  color: #fecaca;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease;
+  font-size: 0.9rem;
+}
+
+.btn-danger:hover {
+  background: rgba(248, 113, 113, 0.25);
+}
+
+.btn-danger-small {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.15);
+  color: #fecaca;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease;
+  font-size: 0.85rem;
+}
+
+.btn-danger-small:hover {
+  background: rgba(248, 113, 113, 0.25);
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rule-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.85);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  transition: border-color 120ms ease;
+}
+
+.rule-card:hover {
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.rule-content {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex: 1;
+}
+
+.rule-priority {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+  min-width: 3rem;
+}
+
+.rule-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rule-type {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #f8fafc;
+}
+
+.rule-conditions {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-family: 'Courier New', monospace;
+}
+
+.rule-assignee {
+  font-size: 0.95rem;
+  color: #60a5fa;
+  font-weight: 500;
+}
+
+.rule-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.rule-form {
+  background: rgba(30, 41, 59, 0.95);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.rule-form h3 {
+  margin-top: 0;
+  color: #f8fafc;
+}
+
+.rule-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+.form-group small {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.conditions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.condition-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 @media (max-width: 768px) {

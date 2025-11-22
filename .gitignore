@@ -20,3 +20,7 @@ pnpm-debug.log*
 # Build output
 server/dist
 
+# Claude config
+.claude
+.docs
+CLAUDE.md

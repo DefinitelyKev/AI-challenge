@@ -1,0 +1,85 @@
+{
+  "requestTypes": [
+    "Sales Contract",
+    "Employment Contract",
+    "NDA",
+    "Marketing Review",
+    "General Legal Question"
+  ],
+  "conditionFields": [
+    {
+      "name": "location",
+      "label": "Location",
+      "type": "select",
+      "options": ["Australia", "United States", "United Kingdom", "Canada"]
+    },
+    {
+      "name": "department",
+      "label": "Department",
+      "type": "select",
+      "options": ["Engineering", "Marketing", "Sales", "Finance", "HR"]
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-1",
+      "requestType": "Sales Contract",
+      "conditions": [
+        {
+          "field": "location",
+          "operator": "equals",
+          "value": "Australia"
+        }
+      ],
+      "assignee": "john@acme.corp",
+      "priority": 1
+    },
+    {
+      "id": "rule-2",
+      "requestType": "Sales Contract",
+      "conditions": [
+        {
+          "field": "location",
+          "operator": "equals",
+          "value": "United States"
+        }
+      ],
+      "assignee": "jane@acme.corp",
+      "priority": 2
+    },
+    {
+      "id": "rule-3",
+      "requestType": "Employment Contract",
+      "conditions": [
+        {
+          "field": "location",
+          "operator": "equals",
+          "value": "United States"
+        }
+      ],
+      "assignee": "hr-us@acme.corp",
+      "priority": 3
+    },
+    {
+      "id": "rule-4",
+      "requestType": "Employment Contract",
+      "conditions": [],
+      "assignee": "hr-legal@acme.corp",
+      "priority": 4
+    },
+    {
+      "id": "rule-5",
+      "requestType": "NDA",
+      "conditions": [],
+      "assignee": "legal@acme.corp",
+      "priority": 5
+    },
+    {
+      "id": "rule-6",
+      "requestType": "Marketing Review",
+      "conditions": [],
+      "assignee": "legal-marketing@acme.corp",
+      "priority": 6
+    }
+  ]
+}

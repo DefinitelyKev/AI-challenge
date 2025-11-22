@@ -49,7 +49,10 @@ export default function ChatPage() {
     event.preventDefault();
     const userText = input.trim();
 
+    console.log('[CLIENT] Submit triggered');
+
     if (!userText || isStreaming) {
+      console.log('[CLIENT] Ignoring submit - empty input or already streaming');
       return;
     }
 
@@ -69,7 +72,11 @@ export default function ChatPage() {
           typeof message.content === "string"
       );
 
+    console.log('[CLIENT] Sending', conversation.length, 'messages to server');
+    console.log('[CLIENT] API URL:', `${API_BASE_URL}/api/chat`);
+
     try {
+      console.log('[CLIENT] Fetching...');
       const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: {
@@ -78,23 +85,39 @@ export default function ChatPage() {
         body: JSON.stringify({ messages: conversation }),
       });
 
+      console.log('[CLIENT] Response received:', response.status, response.statusText);
+      console.log('[CLIENT] Response OK:', response.ok);
+      console.log('[CLIENT] Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok || !response.body) {
-        throw new Error("Failed to connect to chat service");
+        const errorText = await response.text().catch(() => 'No error details');
+        console.error('[CLIENT] Response not OK:', errorText);
+        throw new Error(`Failed to connect to chat service (${response.status})`);
       }
 
+      console.log('[CLIENT] Starting to read stream...');
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let assistantText = "";
+      let chunkCount = 0;
 
       while (true) {
         const { value, done } = await reader.read();
         if (done) {
+          console.log('[CLIENT] Stream done, received', chunkCount, 'chunks');
           break;
         }
 
         if (value) {
-          assistantText += decoder.decode(value, { stream: true });
+          chunkCount++;
+          const chunk = decoder.decode(value, { stream: true });
+          assistantText += chunk;
           const currentText = assistantText;
+
+          if (chunkCount === 1) {
+            console.log('[CLIENT] First chunk received:', chunk.substring(0, 50));
+          }
+
           setMessages((prev) =>
             prev.map((message) =>
               message.id === assistantMessage.id
@@ -106,6 +129,7 @@ export default function ChatPage() {
       }
 
       assistantText += decoder.decode();
+      console.log('[CLIENT] Final text length:', assistantText.length);
 
       setMessages((prev) =>
         prev.map((message) =>
@@ -119,12 +143,14 @@ export default function ChatPage() {
         caughtError instanceof Error
           ? caughtError.message
           : "Something went wrong";
-      console.error(caughtError);
+      console.error('[CLIENT] Error:', caughtError);
+      console.error('[CLIENT] Error message:', message);
       setError(message);
       setMessages((prev) =>
         prev.filter((msg) => msg.id !== assistantMessage.id)
       );
     } finally {
+      console.log('[CLIENT] Cleaning up, setting isStreaming to false');
       setIsStreaming(false);
     }
   };
