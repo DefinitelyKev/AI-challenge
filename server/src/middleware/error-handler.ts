@@ -22,8 +22,24 @@ export class AppError extends Error {
  * - Error: Unexpected errors (500)
  */
 export function errorHandler(err: Error | AppError | ZodError, req: Request, res: Response, _next: NextFunction): void {
-  // Don't log if headers already sent (streaming in progress)
+  // If headers already sent (streaming in progress), close the connection
   if (res.headersSent) {
+    res.end();
+    return;
+  }
+
+  // Handle JSON parse errors (malformed JSON)
+  if (err instanceof SyntaxError && 'status' in err && err.status === 400) {
+    logger.warn("Malformed JSON", {
+      path: req.path,
+      method: req.method,
+      message: err.message,
+    });
+
+    res.status(400).json({
+      error: "Invalid JSON format",
+      details: err.message,
+    });
     return;
   }
 

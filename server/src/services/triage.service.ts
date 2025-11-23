@@ -125,6 +125,12 @@ export class TriageService {
       return config;
     } catch (error) {
       logger.error("Failed to delete rule", error, { ruleId });
+
+      // Check if it's a "not found" error
+      if (error instanceof Error && error.message.includes("not found")) {
+        throw new AppError(404, `Rule with id ${ruleId} not found`);
+      }
+
       throw new AppError(500, "Failed to delete triage rule");
     }
   }

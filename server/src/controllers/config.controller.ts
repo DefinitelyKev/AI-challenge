@@ -27,7 +27,8 @@ export class ConfigController {
    */
   async updateConfig(req: Request, res: Response): Promise<void> {
     await this.triageService.saveConfig(req.body);
-    res.json({ success: true });
+    const config = await this.triageService.getConfig();
+    res.json(config);
   }
 
   /**
